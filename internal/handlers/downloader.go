@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
 
 	"github.com/aaaroz/social-media-downloader/internal/downloader"
@@ -35,33 +34,6 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(result)
-}
-
-func DownloadVideoHandler(w http.ResponseWriter, r *http.Request) {
-	videoURL := r.URL.Query().Get("url")
-	if videoURL == "" {
-		http.Error(w, "Missing video URL", http.StatusBadRequest)
-		return
-	}
-
-	// Fetch the video
-	resp, err := http.Get(videoURL)
-	if err != nil || resp.StatusCode != http.StatusOK {
-		http.Error(w, "Failed to fetch video", http.StatusInternalServerError)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Set headers for file download
-	w.Header().Set("Content-Disposition", "attachment; filename=video.mp4")
-	w.Header().Set("Content-Type", "video/mp4")
-
-	// Stream the video to the client
-	_, err = io.Copy(w, resp.Body)
-	if err != nil {
-		http.Error(w, "Failed to stream video", http.StatusInternalServerError)
-		return
-	}
 }
 
 // Helper function to respond with a JSON-formatted error

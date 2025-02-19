@@ -14,7 +14,6 @@ func SetupRoutes() *mux.Router {
 	r.HandleFunc("/", homeHandler).Methods("GET")
 	r.HandleFunc("/api/platform", handlers.SupportedPlatformsHandler).Methods("GET")
 	r.HandleFunc("/api/download", handlers.DownloadHandler).Methods("POST")
-	r.HandleFunc("/api/download-video", handlers.DownloadVideoHandler).Methods("GET")
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public")))
 
